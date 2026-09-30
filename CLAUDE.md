@@ -1,27 +1,42 @@
 # miernik
 
-Repo: `DragonMaxxx/miernik` (GitHub). Cel: projekt w Godot 4 z agentem do code review na pull requestach.
+Projekt w Godot 4 (GDScript) z agentem Claude do code review na pull requestach.
+Repo: `DragonMaxxx/miernik`. Odpowiadaj po polsku.
 
 ## Stan na 2026-09-30
 
-- Repo jest puste: brak kodu, brak `project.godot`, brak `.github/`.
-- Nic nie zostało jeszcze zbudowane. Poniższy plan NIE jest zatwierdzony przez właściciela.
-- Pracę prowadzimy na branchu `claude/friendly-lovelace-tbx807`. PR-ów nie zakładamy bez wyraźnej prośby.
+- Jest szkielet projektu (`project.godot`, `scenes/main.tscn`, `scripts/main.gd`) i dwa workflowy w `.github/workflows/`.
+- Nie otwierano go jeszcze w edytorze Godot. Rodzaj gry (2D/3D) nie jest ustalony.
+- Założenia domyślne (do zmiany przez właściciela): Godot 4.4, GDScript, renderer GL Compatibility, agent komentuje każdy PR automatycznie i reaguje na `@claude`.
+- Sekret `ANTHROPIC_API_KEY` (Settings → Secrets and variables → Actions) musi dodać właściciel. Bez niego workflowy nie działają.
+- Pracujemy na branchu `claude/friendly-lovelace-tbx807`. PR-ów nie zakładamy bez wyraźnej prośby.
 
-## Proponowany plan
+## Struktura
 
-1. Szkielet projektu Godot 4: `project.godot`, `.gitignore` dla Godota, `README.md`.
-2. Workflow GitHub Actions z agentem code review (`anthropics/claude-code-action`) uruchamianym na PR-ach, z promptem pod GDScript (sygnały, `@onready`, wycieki węzłów, typowanie, `_process` vs `_physics_process`).
-3. Konwencje projektu dopisać tutaj, w `CLAUDE.md`.
-4. Wymagany sekret repo: `ANTHROPIC_API_KEY` (lub token OAuth). Ustawia go właściciel w Settings → Secrets.
+- `scenes/` sceny `.tscn`, `scripts/` skrypty `.gd`.
+- `.godot/` jest w `.gitignore`. Pliki `*.import` obok assetów MUSZĄ być w repo.
 
-## Otwarte pytania do właściciela
+## Konwencje GDScript
 
-- Jaka to gra/aplikacja (2D czy 3D)?
-- GDScript czy C#?
-- Agent ma komentować PR-y automatycznie, czy na komendę (np. `@claude review`)?
+- Wcięcia tabulatorami, `snake_case` dla funkcji i zmiennych, `PascalCase` dla klas, `UPPER_CASE` dla stałych.
+- Statyczne typowanie wszędzie: `var x: int`, `func f(a: Node) -> void`.
+- Prywatne składowe z prefiksem `_`.
 
-## Jak wznowić na innym urządzeniu
+## Zasady code review
 
-- Ta sama sesja w chmurze: https://claude.ai/code/session_017T9SmfKcht2uN2LSc2ns2K
-- Albo nowa sesja na branchu `claude/friendly-lovelace-tbx807` i polecenie: "przeczytaj CLAUDE.md i kontynuuj".
+Kolejność ważności: błędy i crashe > wycieki/wydajność > czytelność. Nie komentuj formatowania (to robi `gdformat`). Nie komentuj szumu w `.tscn` (uid, offsety, `load_steps`).
+
+Checklista GDScript:
+
+- Brak typów w zmiennych, parametrach i zwracanych wartościach.
+- `get_node`/`$Node` wywoływane w `_process`/`_physics_process` zamiast cache'owania przez `@onready`.
+- Dostęp do węzła, który mógł zostać zwolniony, bez `is_instance_valid()`. `await` na sygnale węzła, który może zniknąć.
+- Sygnały: podłączone wielokrotnie, niepodłączone w `_ready`, brak rozłączenia przy zwalnianiu odbiorcy. Literówki w nazwach sygnałów i metod (stringi).
+- `free()` zamiast `queue_free()` na węźle w drzewie. Węzły tworzone przez `Node.new()` i nigdy niedodane do drzewa ani niezwolnione.
+- Logika fizyki w `_process` (lub odwrotnie), `delta` pominięte w ruchu.
+- `load()` w pętli lub w `_process` zamiast `preload()`/cache. Alokacje (tablice, słowniki, `Vector2` w pętli) w gorącej ścieżce.
+- Nieotypowane `@export`. Zależność od kolejności dzieci w drzewie (`get_child(0)`).
+- Autoloady używane jako globalny stan bez potrzeby.
+- Assety dodane bez plików `*.import`. Przypadkowo dodane `.godot/`.
+
+Format odpowiedzi: komentarz inline przy konkretnej linii, z poziomem ważności (błąd / ostrzeżenie / sugestia) i proponowaną poprawką. Na końcu jedno krótkie podsumowanie. Nie zatwierdzaj i nie merguj PR-ów.

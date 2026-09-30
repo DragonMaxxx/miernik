@@ -1,0 +1,48 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+# Nowy push do PR anuluje trwające, już nieaktualne review.
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    # Pomija PR-y w trybie draft.
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR: ${{ github.event.pull_request.number }}
+
+            Zrób code review tego pull requesta (projekt Godot 4, GDScript).
+            Zasady i checklista są w sekcji "Zasady code review" w CLAUDE.md. Trzymaj się ich.
+
+            1. Pobierz diff: `gh pr diff ${{ github.event.pull_request.number }}`.
+            2. Każdy konkretny problem zgłoś jako komentarz inline
+               (narzędzie create_inline_comment), z poziomem ważności i propozycją poprawki.
+            3. Na końcu dodaj jeden krótki komentarz podsumowujący
+               (`gh pr comment ${{ github.event.pull_request.number }} --body ...`).
+               Jeśli nic nie znalazłeś, napisz to jednym zdaniem.
+
+            Nie zatwierdzaj i nie merguj PR-a. Nie zmieniaj plików.
+          claude_args: |
+            --max-turns 20
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
