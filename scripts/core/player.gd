@@ -1,8 +1,8 @@
 # Autor: Mateusz Bartoszewicz
 class_name Player
 extends CharacterBody2D
-## Gracz: porusza się po arenie strzałkami (domyślne akcje ui_*).
-## Zbieranie jabłek obsługuje Apple, gracz o nich nie wie.
+## Gracz: porusza się po arenie akcjami move_* z InputMap (WASD i strzałki,
+## definicje w project.godot). Zbieranie jabłek obsługuje Apple, gracz o nich nie wie.
 
 const SIZE: float = 32.0
 const COLOR: Color = Color(0.23, 0.44, 0.82)
@@ -11,7 +11,7 @@ const COLOR: Color = Color(0.23, 0.44, 0.82)
 
 
 func _physics_process(_delta: float) -> void:
-	var direction: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * speed
 	move_and_slide()
 	# Arena to cały viewport, więc trzymamy gracza w jego granicach.

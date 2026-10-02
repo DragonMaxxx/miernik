@@ -20,8 +20,10 @@ Nazwa binarki zależy od instalacji (`godot`, `godot4` lub ścieżka do pliku). 
 
 Widok z góry: zbieraj jabłka, zanim zgniją (czerwone → brązowe). Runda trwa 60 s.
 
-- Strzałki: ruch (domyślne akcje `ui_*` Godota, bez zmian w ustawieniach projektu).
-- Enter lub spacja po końcu rundy: jeszcze raz.
+- **Tempo rośnie:** w trakcie rundy jabłka pojawiają się coraz częściej i gniją coraz szybciej.
+- **Złote jabłko** (12% szans) daje 5 punktów, ale gnije szybciej.
+- **Kombo:** kolejne jabłko zebrane w ciągu 1,5 s od poprzedniego podbija mnożnik punktów (do x5). Po przerwie kombo wygasa.
+- **Sterowanie:** WASD lub strzałki (akcje `move_*` w `project.godot`), Esc to pauza, Enter lub spacja po końcu rundy to restart.
 - Grafika to klocki rysowane w `_draw()`, bez assetów. Stałe do dostrojenia są na górze skryptów (`main.gd`, `apple.gd`, `player.gd`).
 - Sceny: `scenes/world/main.tscn` (start), `scenes/player/player.tscn`, `scenes/world/apple.tscn`, `scenes/ui/hud.tscn`.
 
