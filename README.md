@@ -16,6 +16,15 @@ godot --headless --path . --quit   # szybki test, czy projekt się ładuje
 
 Nazwa binarki zależy od instalacji (`godot`, `godot4` lub ścieżka do pliku). Możesz też otworzyć projekt w edytorze (Import → `project.godot`).
 
+## Mikrogra: zbieracz jabłek (krok 0 planu)
+
+Widok z góry: zbieraj jabłka, zanim zgniją (czerwone → brązowe). Runda trwa 60 s.
+
+- Strzałki: ruch (domyślne akcje `ui_*` Godota, bez zmian w ustawieniach projektu).
+- Enter lub spacja po końcu rundy: jeszcze raz.
+- Grafika to klocki rysowane w `_draw()`, bez assetów. Stałe do dostrojenia są na górze skryptów (`main.gd`, `apple.gd`, `player.gd`).
+- Sceny: `scenes/world/main.tscn` (start), `scenes/player/player.tscn`, `scenes/world/apple.tscn`, `scenes/ui/hud.tscn`.
+
 ## Struktura
 
 ```
