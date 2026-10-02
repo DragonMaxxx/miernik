@@ -33,7 +33,8 @@ jobs:
             PR: ${{ github.event.pull_request.number }}
 
             Zrób code review tego pull requesta (projekt Godot 4, GDScript).
-            Zasady i checklista są w sekcji "Zasady code review" w CLAUDE.md. Trzymaj się ich.
+            Zasady i checklista są w sekcji 13 pliku CLAUDE.md ("Zasady code review").
+            Pozostałe ustalenia projektu (sekcje 3, 6, 7, 8 i 11 tego pliku) traktuj jako obowiązujące.
 
             1. Pobierz diff: `gh pr diff ${{ github.event.pull_request.number }}`.
             2. Każdy konkretny problem zgłoś jako komentarz inline

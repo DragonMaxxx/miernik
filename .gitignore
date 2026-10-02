@@ -1,3 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# GDExtension: skompilowanych bibliotek nie commitujemy (CLAUDE.md, sekcja 8)
+*.dll
+*.so
+*.dylib

@@ -1,20 +1,39 @@
 # miernik
 
-Projekt w Godot 4 (GDScript) z agentem Claude do code review.
+Gra 2D top-down w stylu Stardew Valley (oryginalna), w Godot 4 i GDScript. Tytuł roboczy: miernik (nazwa repo, **DO USTALENIA**).
+
+Ustalenia, architektura i konwencje: [`CLAUDE.md`](CLAUDE.md). Szkic projektu gry: [`docs/gdd.md`](docs/gdd.md).
 
 ## Uruchomienie
 
-Otwórz folder w Godot 4.4 lub nowszym (Import → `project.godot`) i uruchom projekt (F5).
+Wymagany Godot 4.3 lub nowszy (potrzebny `TileMapLayer`). Dokładna wersja jest **DO USTALENIA**.
+
+```bash
+git lfs install            # jednorazowo, pliki binarne idą przez Git LFS
+godot --path .             # uruchomienie
+godot --headless --path . --quit   # szybki test, czy projekt się ładuje
+```
+
+Nazwa binarki zależy od instalacji (`godot`, `godot4` lub ścieżka do pliku). Możesz też otworzyć projekt w edytorze (Import → `project.godot`).
+
+## Struktura
+
+```
+assets/{art,audio,fonts}
+data/{items,crops,recipes}      # Resources .tres
+scenes/{player,world,ui,npc}
+scripts/{core,systems,ui}
+docs/gdd.md
+```
 
 ## Code review agenta
 
-- `.github/workflows/claude-review.yml` uruchamia review przy każdym PR (poza draftami).
+- `.github/workflows/claude-review.yml` robi review każdego PR (poza draftami), według zasad z `CLAUDE.md`, sekcja 13.
 - `.github/workflows/claude.yml` odpowiada na `@claude` w komentarzach do PR-ów i issue.
-- Zasady review są w `CLAUDE.md`, w sekcji "Zasady code review".
 
-### Wymagana konfiguracja
+Wymagana konfiguracja:
 
 1. Zainstaluj [Claude GitHub App](https://github.com/apps/claude) na repo.
 2. Dodaj sekret `ANTHROPIC_API_KEY` w Settings → Secrets and variables → Actions.
-3. Pliki workflow muszą być na domyślnym branchu repo. Akcja odrzuca workflow, którego treść różni się od wersji na domyślnym branchu.
+3. Pliki workflow muszą być na domyślnym branchu repo (docelowo `main`). Akcja odrzuca workflow, którego treść różni się od wersji na domyślnym branchu.
 4. Na PR-ach z forków sekrety nie są dostępne, więc review tam nie zadziała.
